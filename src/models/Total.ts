@@ -3,7 +3,6 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface ITotal extends Document {
   name: string;
   total: number;
-  describeName: string;
   dailyAve: number;
   dayOnDay: number;
   weakOnWeak: number;
@@ -22,28 +21,19 @@ const TotalSchema: Schema<ITotal> = new Schema<ITotal>({
     min: [0, '数量不能小于0'],
     default: 0
   },
-  describeName: {
-    type: String,
-    required: [true, '分类描述的名字是必须的'],
-    trim: true,
-    maxlength: [100, '名称不能超过100个字符']
-  },
   dailyAve: {
     type: Number,
     required: true,
-    min: [0, '数量不能小于0'],
     default: 0
   },
   dayOnDay: {
     type: Number,
     required: true,
-    min: [0, '数量不能小于0'],
     default: 0
   },
   weakOnWeak: {
     type: Number,
     required: true,
-    min: [0, '数量不能小于0'],
     default: 0
   },
 })

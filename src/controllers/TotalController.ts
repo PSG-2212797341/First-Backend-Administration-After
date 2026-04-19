@@ -100,14 +100,13 @@ export class TotalController {
       const { 
         name, 
         total, 
-        describeName, 
         dailyAve, 
         dayOnDay, 
         weakOnWeak 
       } = req.body;
       
       // 验证必需字段
-      if (!name || !describeName) {
+      if (!name) {
         res.status(400).json({
           success: false,
           message: '名称和描述名称是必需的'
@@ -119,7 +118,6 @@ export class TotalController {
       const newTotal = new Total({
         name,
         total: total || 0,
-        describeName,
         dailyAve: dailyAve || 0,
         dayOnDay: dayOnDay || 0,
         weakOnWeak: weakOnWeak || 0
@@ -149,7 +147,7 @@ export class TotalController {
         return;
       }
       
-      // 处理重复键错误（如果name或describeName有唯一索引）
+      // 处理重复键错误（如果name有唯一索引）
       if ((error as any).code === 11000) {
         res.status(409).json({
           success: false,
@@ -343,6 +341,47 @@ export class TotalController {
       res.status(500).json({
         success: false,
         message: '获取统计数据失败'
+      });
+    }
+  };
+
+  /**
+   * 清空所有汇总数据
+   * DELETE /api/totals
+   */
+  clearAllTotals = async (_req: Request, res: Response): Promise<void> => {
+    try {
+      // 确认操作 - 在生产环境中可能需要额外的验证
+      if (process.env.NODE_ENV === 'production') {
+        // 可以添加额外的安全检查，如API密钥验证
+        const authHeader = _req.headers['x-clear-api-key'];
+        const expectedKey = process.env.CLEAR_API_KEY;
+        
+        if (expectedKey && authHeader !== expectedKey) {
+          res.status(401).json({
+            success: false,
+            message: '未授权执行此操作'
+          });
+          return;
+        }
+      }
+      
+      // 执行清空操作
+      const result = await Total.deleteMany({});
+      
+      res.json({
+        success: true,
+        message: `成功清空所有汇总数据，共删除 ${result.deletedCount} 条记录`,
+        data: {
+          deletedCount: result.deletedCount
+        }
+      });
+    } catch (error) {
+      console.error('清空汇总数据失败:', error);
+      res.status(500).json({
+        success: false,
+        message: '清空汇总数据失败',
+        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       });
     }
   };

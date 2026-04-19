@@ -3,6 +3,7 @@ import express from 'express';
 import { connectDatabase } from './database';
 import totalRoutes from './routes/totalRoutes';
 import { errorProduct, errorRequest } from './middlewares/error';
+import dynamicFormRoutes from './routes/dynamicFormRoutes';
 
 // 配置对象，提供类型安全的环境变量访问
 const config = {
@@ -41,6 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // 路由
 app.use(`${config.apiPrefix}/v1/total`, totalRoutes);
+app.use(`${config.apiPrefix}/v1/dynamic-forms`, dynamicFormRoutes);
 
 // 404处理
 app.use(errorRequest);

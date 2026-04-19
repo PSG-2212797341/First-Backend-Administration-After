@@ -149,7 +149,6 @@ router.get('/:id', totalController.getTotalById);
  *             type: object
  *             required:
  *               - name
- *               - describeName
  *             properties:
  *               name:
  *                 type: string
@@ -158,9 +157,6 @@ router.get('/:id', totalController.getTotalById);
  *                 type: number
  *                 description: 总计数量
  *                 default: 0
- *               describeName:
- *                 type: string
- *                 description: 分类描述名称
  *               dailyAve:
  *                 type: number
  *                 description: 日均值
@@ -321,6 +317,44 @@ router.delete('/:id', totalController.deleteTotal);
 
 /**
  * @swagger
+ * /api/totals:
+ *   delete:
+ *     summary: 清空所有汇总数据
+ *     tags: [Totals]
+ *     description: 删除所有汇总数据记录。在生产环境中可能需要额外的验证。
+ *     parameters:
+ *       - in: header
+ *         name: x-clear-api-key
+ *         schema:
+ *           type: string
+ *         description: 用于生产环境验证的API密钥（可选）
+ *     responses:
+ *       200:
+ *         description: 成功清空所有汇总数据
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     deletedCount:
+ *                       type: integer
+ *                       description: 删除的记录数量
+ *       401:
+ *         description: 未授权（生产环境需要API密钥）
+ *       500:
+ *         description: 服务器错误
+ */
+router.delete('/', totalController.clearAllTotals);
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Total:
@@ -328,7 +362,6 @@ router.delete('/:id', totalController.deleteTotal);
  *       required:
  *         - name
  *         - total
- *         - describeName
  *         - dailyAve
  *         - dayOnDay
  *         - weakOnWeak
@@ -342,9 +375,6 @@ router.delete('/:id', totalController.deleteTotal);
  *         total:
  *           type: number
  *           description: 总计数量
- *         describeName:
- *           type: string
- *           description: 分类描述名称
  *         dailyAve:
  *           type: number
  *           description: 日均值
@@ -366,7 +396,6 @@ router.delete('/:id', totalController.deleteTotal);
  *         _id: 507f1f77bcf86cd799439011
  *         name: "月度销售汇总"
  *         total: 15000
- *         describeName: "销售数据"
  *         dailyAve: 500
  *         dayOnDay: 1.05
  *         weakOnWeak: 1.15
@@ -381,9 +410,6 @@ router.delete('/:id', totalController.deleteTotal);
  *         total:
  *           type: number
  *           description: 总计数量
- *         describeName:
- *           type: string
- *           description: 分类描述名称
  *         dailyAve:
  *           type: number
  *           description: 日均值
