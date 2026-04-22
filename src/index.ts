@@ -4,6 +4,7 @@ import { connectDatabase } from './database';
 import totalRoutes from './routes/totalRoutes';
 import { errorProduct, errorRequest } from './middlewares/error';
 import dynamicFormRoutes from './routes/dynamicFormRoutes';
+import authRoutes from './routes/authRoutes';
 
 // 配置对象，提供类型安全的环境变量访问
 const config = {
@@ -43,6 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 // 路由
 app.use(`${config.apiPrefix}/v1/total`, totalRoutes);
 app.use(`${config.apiPrefix}/v1/dynamic-forms`, dynamicFormRoutes);
+app.use(`${config.apiPrefix}/v1/auth`, authRoutes);
 
 // 404处理
 app.use(errorRequest);
