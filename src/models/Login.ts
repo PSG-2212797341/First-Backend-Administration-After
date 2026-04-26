@@ -5,6 +5,7 @@ import bcrypt from "bcrypt"
 export interface ILogin extends Document {
     username: string
     password: string
+    role: "user" | "admin"
     passwordHash: string
     createdAt: Date
     updatedAt: Date
@@ -41,6 +42,11 @@ const LoginSchema = new Schema<ILogin>(
             type: String,
             required: false,
             select: false // 查询时不返回密码哈希字段
+        },
+        role: {
+            type: String,
+            enum: ["user", "admin"],
+            default: "user"
         }
     },
     {
@@ -50,7 +56,7 @@ const LoginSchema = new Schema<ILogin>(
 
 // 密码加密中间件
 LoginSchema.pre('save', async function(this) {
-    const user = this as any;
+    const user = this;
     
     // 确保username不为null或undefined
     if (!user.username || user.username.trim() === '') {
@@ -71,6 +77,7 @@ LoginSchema.pre('save', async function(this) {
         throw error;
     }
 });
+
 
 // 实例方法：比较密码
 LoginSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {

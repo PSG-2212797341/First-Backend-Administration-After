@@ -157,8 +157,10 @@ export class LoginController {
         username: user.username,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        role: user.role
       };
 
+      console.log(user.role)
       res.json({
         success: true,
         message: "登录成功",
