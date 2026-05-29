@@ -1,27 +1,35 @@
 declare namespace NodeJS {
+  // 环境变量
   interface ProcessEnv {
     // Server
-    NODE_ENV: 'development' | 'production' | 'test';
+    NODE_ENV: "development" | "production" | "test";
     PORT: string;
-    
+
     // API
     API_PREFIX?: string;
-    
+
     // Logging
-    LOG_LEVEL?: 'error' | 'warn' | 'info' | 'debug';
-    
-    // Database (example)
+    LOG_LEVEL?: "error" | "warn" | "info" | "debug";
+
+    // Database
     DATABASE_URL?: string;
-    
-    // Authentication (example)
+    TEST_DATABASE_URL?: string;
+
+    // JWT令牌
     JWT_SECRET?: string;
     JWT_EXPIRES_IN?: string;
-    
-    // Application
-    APP_NAME?: string;
-    APP_VERSION?: string;
-    
-    // Add other environment variables as needed
+
+    // 📬 邮件服务器配置
+    SMTP_HOST: string;
+
+    // 💡 核心修复：在大厂规范中，端口从 env 读出来默认是 string，
+    // 我们限定它只能是标准的安全的 "465" 或 "587" 字符串类型，或者更通用的 string
+    SMTP_PORT: "465" | "587" | string;
+
+    SMTP_USER: string;
+    SMTP_PASS: string; // 授权码
+
+    // 兜底签名
     [key: string]: string | undefined;
   }
 }

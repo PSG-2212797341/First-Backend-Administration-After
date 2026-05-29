@@ -1,87 +1,74 @@
-import 'dotenv/config';
-import express from 'express';
-import { connectDatabase } from './database';
-import totalRoutes from './routes/totalRoutes';
-import { errorProduct, errorRequest } from './middlewares/error';
-import dynamicFormRoutes from './routes/dynamicFormRoutes';
-import authRoutes from './routes/authRoutes';
+// src/index.ts
+import { Server } from "http";
+import "dotenv/config";
+import { app } from "./app"; // 🎯 1. 引入组装好的 app 实例
+import { connectDatabase } from "./server";
+import { envConfig } from "@/config/envConfig";
+import { logger } from "@/config/logger";
 
-// 配置对象，提供类型安全的环境变量访问
-const config = {
-  // Server
-  nodeEnv: process.env.NODE_ENV || 'development',
-  port: parseInt(process.env.PORT || '3000', 10),
-  
-  // API
-  apiPrefix: process.env.API_PREFIX || '/api',
-  
-  // Logging
-  logLevel: process.env.LOG_LEVEL || 'info',
-  
-  // Application
-  appName: process.env.APP_NAME || 'Express TypeScript API',
-  appVersion: process.env.APP_VERSION || '1.0.0',
-  
-  // 检查必需的环境变量
-  validate: () => {
-    const required = ['NODE_ENV', 'PORT'];
-    const missing = required.filter(key => !process.env[key]);
-    if (missing.length > 0) {
-      console.warn(`警告：缺少环境变量: ${missing.join(', ')}`);
-    }
-  }
-};
-
-// 验证环境变量
-config.validate();
-
-const app = express();
-
-// 中间件
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// 路由
-app.use(`${config.apiPrefix}/v1/total`, totalRoutes);
-app.use(`${config.apiPrefix}/v1/dynamic-forms`, dynamicFormRoutes);
-app.use(`${config.apiPrefix}/v1/auth`, authRoutes);
-
-// 404处理
-app.use(errorRequest);
-
-// 错误处理中间件
-app.use(errorProduct);
+let server: Server;
 
 // 启动服务器函数
 async function startServer() {
   try {
     // 1. 先连接数据库
     await connectDatabase();
-    console.log('✅ 数据库连接成功');
-    
-    // 2. 启动服务器
-    app.listen(config.port, () => {
-      console.log(`🚀 服务器运行在 http://localhost:${config.port}`);
-      console.log(`📁 环境: ${config.nodeEnv}`);
-      console.log(`🗄️  数据库: ${process.env.DATABASE_URL ? '已配置' : '未配置'}`);
+    logger.info("🚀 [基础设施] MongoDB 数据库集群连接成功");
+
+    // 2. 启动服务器并保存实例
+    server = app.listen(envConfig.port, () => {
+      logger.info(
+        `✨ [系统启航] 核心后端服务已成功跑起来了！\n` +
+          `   📍 访问地址: http://localhost:${envConfig.port}\n` +
+          `   📁 运行环境: [${envConfig.nodeEnv}]\n` +
+          `   🗄️  数据库Url: ${envConfig.databaseUrl ? "已成功配置" : "未配置"}\n` +
+          `   📝 契约中心: http://localhost:${envConfig.port}/api-docs`,
+      );
     });
-    
   } catch (error) {
-    console.error('❌ 启动服务器失败:', error);
+    logger.error("💥 [致命错误] 后端核心服务器启动失败，进程被迫中止:", error);
     process.exit(1);
   }
+}
+
+// 统一的优雅关闭处理函数
+async function gracefulShutdown(signal: string) {
+  logger.warn(
+    `⬇️ [进程管控] 收到系统的 [${signal}] 信号，开始执行工业级优雅关闭程序...`,
+  );
+
+  if (!server) {
+    logger.info("ℹ️ [进程管控] 服务器实例未建立，直接安全退出进程");
+    process.exit(0);
+  }
+
+  server.close(async () => {
+    logger.info(
+      "✅ [进程管控] 所有进行中的 HTTP 请求已处理完毕，网关已停止接收新流量",
+    );
+
+    try {
+      logger.info(
+        "👋 [进程管控] 全站资源已完美释放，进程体面退出。TS-Backend Offline.",
+      );
+      process.exit(0);
+    } catch (error) {
+      logger.error("❌ [进程管控] 断开基础设施连接时发生异状:", error);
+      process.exit(1);
+    }
+  });
+
+  setTimeout(() => {
+    logger.error(
+      "⚠️ [安全警报] 优雅关闭超时 (10s)，可能存在挂起请求，正在强制闪退进程...",
+    );
+    process.exit(1);
+  }, 10000);
 }
 
 // 启动服务器
 startServer();
 
-// 优雅关闭
-process.on('SIGTERM', () => {
-  console.log('收到SIGTERM信号，正在关闭服务器...');
-  process.exit(0);
-});
-
-process.on('SIGINT', () => {
-  console.log('收到SIGINT信号，正在关闭服务器...');
-  process.exit(0);
-});
+// 监听系统信号
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
