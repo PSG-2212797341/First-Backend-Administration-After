@@ -1,6 +1,6 @@
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
-import { registry } from "@/config/swagger";
+import { registry } from "../config/swagger";
 
 extendZodWithOpenApi(z);
 
@@ -294,12 +294,10 @@ export function registerAuthSwaggerDocs() {
           "application/json": {
             schema: z
               .object({
-                username: z
-                  .string()
-                  .openapi({
-                    example: "alex_developer",
-                    description: "用户名",
-                  }),
+                username: z.string().openapi({
+                  example: "alex_developer",
+                  description: "用户名",
+                }),
                 code: z
                   .string()
                   .length(6)

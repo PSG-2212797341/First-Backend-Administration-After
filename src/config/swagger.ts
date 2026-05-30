@@ -5,7 +5,7 @@ import {
 } from "@asteasolutions/zod-to-openapi";
 import swaggerUi from "swagger-ui-express";
 import { Express } from "express";
-import { registerAuthSwaggerDocs } from "@/swagger/user.swagger"; // ⬅️ 引入新切出去的文档
+import { registerAuthSwaggerDocs } from "../swagger/user.swagger"; // ⬅️ 引入新切出去的文档
 
 export const registry = new OpenAPIRegistry();
 

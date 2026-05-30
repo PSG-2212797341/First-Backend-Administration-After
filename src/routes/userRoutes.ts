@@ -1,14 +1,14 @@
 // src/routes/authRoutes.ts
 import { Router } from "express";
-import { UserController } from "@/controllers/UserController";
-import { validate } from "@/middlewares/validate";
+import { UserController } from "../controllers/UserController";
+import { validate } from "../middlewares/validate";
 import {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
   sendCodeSchema,
   verifyCodeSchema,
-} from "@/validators/user.validator";
+} from "../validators/user.validator";
 
 const router = Router();
 const authController = new UserController();

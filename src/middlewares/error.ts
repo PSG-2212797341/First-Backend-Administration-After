@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { envConfig } from "@/config/envConfig";
-import { logger } from "@/config/logger"; // 🚀 1. 引入你的中央 Winston 日志实例
+import { envConfig } from "../config/envConfig";
+import { logger } from "../config/logger"; // 🚀 1. 引入你的中央 Winston 日志实例
 
 /**
  * 1. 全局错误处理中间件 (统一捕获未处理的运行时异常)

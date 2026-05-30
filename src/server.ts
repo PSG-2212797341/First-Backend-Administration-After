@@ -1,7 +1,7 @@
 // 数据库链接
 import mongoose from "mongoose";
-import { envConfig } from "@/config/envConfig";
-import { logger } from "@/config/logger"; // 🚀 1. 引入你的 Winston 实例
+import { envConfig } from "./config/envConfig";
+import { logger } from "./config/logger"; // 🚀 1. 引入你的 Winston 实例
 
 export const connectDatabase = async (): Promise<void> => {
   const url = envConfig.databaseUrl;

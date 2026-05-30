@@ -4,8 +4,8 @@ import helmet from "helmet";
 import "dotenv/config";
 import { errorProduct, errorRequest } from "./middlewares/error";
 import authRoutes from "./routes/userRoutes";
-import { envConfig } from "@/config/envConfig";
-import { setupSwagger } from "@/config/swagger";
+import { envConfig } from "./config/envConfig";
+import { setupSwagger } from "./config/swagger";
 
 // 验证环境变量
 envConfig.validate();

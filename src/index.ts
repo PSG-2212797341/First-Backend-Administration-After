@@ -3,8 +3,8 @@ import { Server } from "http";
 import "dotenv/config";
 import { app } from "./app"; // 🎯 1. 引入组装好的 app 实例
 import { connectDatabase } from "./server";
-import { envConfig } from "@/config/envConfig";
-import { logger } from "@/config/logger";
+import { envConfig } from "./config/envConfig";
+import { logger } from "./config/logger";
 
 let server: Server;
 

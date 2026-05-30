@@ -3,9 +3,9 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { User } from "../models/User";
-import { envConfig } from "@/config/envConfig";
-import { CodeStorage } from "@/utils/codeStorage";
-import { logger } from "@/config/logger"; // 🚀 1. 引入工业级日志大喇叭
+import { envConfig } from "../config/envConfig";
+import { CodeStorage } from "../utils/codeStorage";
+import { logger } from "../config/logger"; // 🚀 1. 引入工业级日志大喇叭
 
 export class UserController {
   /**
