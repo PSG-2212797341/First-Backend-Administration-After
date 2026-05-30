@@ -7,6 +7,7 @@ import {
   loginSchema,
   forgotPasswordSchema,
   sendCodeSchema,
+  verifyCodeSchema,
 } from "@/validators/user.validator";
 
 const router = Router();
@@ -16,6 +17,11 @@ const authController = new UserController();
 router.post("/register", validate(registerSchema), authController.register);
 router.post("/login", validate(loginSchema), authController.login);
 router.post("/send-code", validate(sendCodeSchema), authController.sendCode);
+router.post(
+  "/verify-code",
+  validate(verifyCodeSchema),
+  authController.validateCode,
+);
 router.post(
   "/forgot-password",
   validate(forgotPasswordSchema),

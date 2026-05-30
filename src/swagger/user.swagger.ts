@@ -279,4 +279,53 @@ export function registerAuthSwaggerDocs() {
       },
     },
   });
+
+  // 6. 验证码核验接口
+  registry.registerPath({
+    method: "post",
+    path: "/verify-code",
+    summary: "实时核验验证码有效性",
+    description:
+      "开放接口。用于前端表单实时校验。校验验证码是否正确且在有效期内，确保下一步重置密码流程的安全性。",
+    tags: ["用户认证模块"],
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: z
+              .object({
+                username: z
+                  .string()
+                  .openapi({
+                    example: "alex_developer",
+                    description: "用户名",
+                  }),
+                code: z
+                  .string()
+                  .length(6)
+                  .openapi({ example: "582910", description: "6位验证码" }),
+              })
+              .openapi("VerifyCodeInput"),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "200 OK - 验证码校验通过",
+        content: {
+          "application/json": {
+            schema: z.object({
+              success: z.boolean().openapi({ example: true }),
+              message: z.string().openapi({ example: "验证码正确" }),
+            }),
+          },
+        },
+      },
+      400: {
+        description: "400 Bad Request - 验证码错误或已过期",
+        content: { "application/json": { schema: CommonErrorSchema } },
+      },
+    },
+  });
 }

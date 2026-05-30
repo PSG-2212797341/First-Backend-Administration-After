@@ -26,4 +26,15 @@ export const CodeStorage = {
     if (isValid) storage.delete(username); // 验证码是一次性的，用完立刻销毁
     return isValid;
   },
+
+  // 新增 peekVerify：只比对，不删除！专门给单独验证接口使用
+  peekVerify: (username: string, inputCode: string): boolean => {
+    const record = storage.get(username);
+    if (!record) return false;
+    if (Date.now() > record.expiresAt) {
+      storage.delete(username);
+      return false;
+    }
+    return record.code === inputCode; // ✅ 仅返回对错，绝不删除
+  },
 };

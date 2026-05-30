@@ -217,6 +217,37 @@ export class UserController {
   };
 
   /**
+   * 验证验证码
+   */
+  validateCode = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const { username, code } = req.body;
+      console.log(username, code);
+
+      const isCodeValid = CodeStorage.peekVerify(username, code);
+      if (!isCodeValid) {
+        logger.debug(
+          `🔍 [安全调试] 用户 [${username}] 试图通过错误的验证码 [${code}] 修改密码`,
+        );
+        res.status(400).json({ success: false, message: "验证码错误或已过期" });
+        return;
+      } else {
+        logger.debug(
+          `🔍 [信息验证] 用户 [${username}] 当前的验证码 [${code}] 验证成功`,
+        );
+        res.status(200).json({ success: true, message: "验证码正确" });
+        return;
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
    * 验证令牌
    */
   validateToken = async (

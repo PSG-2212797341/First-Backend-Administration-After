@@ -2,6 +2,7 @@ import "dotenv/config"; // 🎯 1. 确保第一行加载 .env 变量
 import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../app"; // 🎯 2. 确保这里的 app 没在底部私自 listen 端口
+import { CodeStorage } from "../utils/codeStorage";
 
 // 延长 Jest 的耐心到 30 秒（防止远程 Atlas 数据库连接慢或加密算法耗时）
 jest.setTimeout(30000);
@@ -97,5 +98,28 @@ describe("🏢 用户认证模块（Auth）全链路集成测试", () => {
     expect(res.status).toBe(200); // 假装成功
     expect(res.body.success).toBe(true);
     expect(res.body.message).toContain("验证码已发送");
+  });
+
+  // 6. 测试【验证码核验接口】（你的最新功能）
+  it("✅ POST /verify-code - 验证码核验成功应返回 200", async () => {
+    // 🌟 使用 .set 方法注入测试数据
+    CodeStorage.set(testUser.username, "123456");
+
+    const res = await request(app)
+      .post("/api/v1/auth/verify-code") // 确保这里的路径与你后端实际路由一致
+      .send({ username: testUser.username, code: "123456" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  it("❌ POST /verify-code - 输入错误验证码应返回 400", async () => {
+    const res = await request(app)
+      .post("/api/v1/auth/verify-code")
+      .send({ username: testUser.username, code: "999999" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toContain("验证码");
   });
 });

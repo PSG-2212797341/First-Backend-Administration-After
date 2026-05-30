@@ -9,7 +9,7 @@ const passwordRule = z
   .string({ error: "密码是必需的" })
   .min(8, "密码长度至少 8 位")
   .regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
     "密码必须包含至少一个大写字母、一个小写字母和一个数字",
   );
 const emailRule = z.string({ error: "邮箱是必需的" }).email("邮箱格式不正确");
@@ -33,6 +33,13 @@ export const loginSchema = z.object({
 });
 export const sendCodeSchema = z.object({
   body: z.object({ username: usernameRule }),
+});
+export const verifyCodeSchema = z.object({
+  // 或者是 Joi.object / 根据你实际的库来
+  body: z.object({
+    username: z.string().min(3, "用户名格式不正确"),
+    code: z.string().length(6, "验证码必须为6位"), // 🌟 显式允许并校验 code 字段！
+  }),
 });
 export const forgotPasswordSchema = z.object({
   body: z.object({

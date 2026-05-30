@@ -42,12 +42,11 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: [true, "密码是必须的"],
       minlength: [8, "密码至少需要8个字符"],
-      validate: {
-        validator: function (v: string) {
-          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(v);
-        },
-        message: "密码必须包含至少一个大写字母、一个小写字母和一个数字",
+      validator: function (v: string) {
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(v);
       },
+      message:
+        "密码必须包含至少一个大写字母、一个小写字母和一个数字，且至少8位",
       select: false,
     },
     passwordHash: {
