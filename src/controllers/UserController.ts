@@ -226,7 +226,6 @@ export class UserController {
   ): Promise<void> => {
     try {
       const { username, code } = req.body;
-      console.log(username, code);
 
       const isCodeValid = CodeStorage.peekVerify(username, code);
       if (!isCodeValid) {

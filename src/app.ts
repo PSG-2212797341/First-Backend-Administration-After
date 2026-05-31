@@ -1,7 +1,6 @@
 // 用于组装所有中间件配置、路由挂载和 Swagger 初始化
 import express from "express";
 import helmet from "helmet";
-import "dotenv/config";
 import { errorProduct, errorRequest } from "./middlewares/error";
 import authRoutes from "./routes/userRoutes";
 import { envConfig } from "./config/envConfig";

@@ -8,12 +8,10 @@ declare namespace NodeJS {
     // API
     API_PREFIX?: string;
 
-    // Logging
-    LOG_LEVEL?: "error" | "warn" | "info" | "debug";
-
     // Database
-    DATABASE_URL?: string;
-    TEST_DATABASE_URL?: string;
+    DATABASE_URL: string;
+    PROD_DATABASE_URL: string;
+    TEST_DATABASE_URL: string;
 
     // JWT令牌
     JWT_SECRET?: string;

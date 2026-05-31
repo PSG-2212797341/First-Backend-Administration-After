@@ -1,37 +1,44 @@
-// 配置对象，提供类型安全的环境变量访问
+import dotenv from "dotenv";
+import path from "path";
+
+// 1. 始终加载 .env 文件（但根据环境决定是否“覆盖”系统环境变量）
+// 这样无论开发还是生产，process.env 都能获取到 .env 里的定义
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+
 export const envConfig = {
-  // Server
   nodeEnv: process.env.NODE_ENV || "development",
   port: parseInt(process.env.PORT || "3000", 10),
-
-  // API
   apiPrefix: process.env.API_PREFIX || "/api",
 
-  // Logging
-  logLevel: process.env.LOG_LEVEL || "info",
+  // 2. 逻辑分流：根据环境选择对应的数据库地址
+  // 如果是生产环境，优先读 PROD_DATABASE_URL，否则读 DATABASE_URL
+  databaseUrl:
+    process.env.NODE_ENV === "production"
+      ? process.env.PROD_DATABASE_URL
+      : process.env.DATABASE_URL,
 
-  // 数据库
-  databaseUrl: process.env.DATABASE_URL,
   testDatabaseUrl: process.env.TEST_DATABASE_URL,
 
-  // JWT
-  jwtSecret:
-    process.env.JWT_SECRET ||
-    "8f9a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8a0f5c2b",
+  jwtSecret: process.env.JWT_SECRET || "default_fallback_secret",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
 
-  // 发送验证码配置
   smtpHost: process.env.SMTP_HOST,
   smtpPort: process.env.SMTP_PORT,
   smtpUser: process.env.SMTP_USER,
   smtpPass: process.env.SMTP_PASS,
 
-  // 检查必需的环境变量
   validate: () => {
-    const required = ["NODE_ENV", "PORT"];
-    const missing = required.filter((key) => !process.env[key]);
-    if (missing.length > 0) {
-      console.warn(`警告：缺少环境变量: ${missing.join(", ")}`);
+    // 动态校验：根据当前环境校验对应的变量
+    const currentUrl =
+      process.env.NODE_ENV === "production"
+        ? process.env.PROD_DATABASE_URL
+        : process.env.DATABASE_URL;
+
+    if (!currentUrl) {
+      console.error(
+        `💥 [致命错误] 当前模式 [${process.env.NODE_ENV}] 缺少对应的数据库地址配置！`,
+      );
+      process.exit(1);
     }
   },
 };

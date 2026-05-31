@@ -1,6 +1,5 @@
 // src/index.ts
 import { Server } from "http";
-import "dotenv/config";
 import { app } from "./app"; // 🎯 1. 引入组装好的 app 实例
 import { connectDatabase } from "./server";
 import { envConfig } from "./config/envConfig";
@@ -11,6 +10,9 @@ let server: Server;
 // 启动服务器函数
 async function startServer() {
   try {
+    // 校验数据库是否连错
+    envConfig.validate();
+
     // 1. 先连接数据库
     await connectDatabase();
     logger.info("🚀 [基础设施] MongoDB 数据库集群连接成功");

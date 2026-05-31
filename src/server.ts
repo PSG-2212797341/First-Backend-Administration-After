@@ -15,7 +15,7 @@ export const connectDatabase = async (): Promise<void> => {
   try {
     await mongoose.connect(url, {
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 1000 * 30,
     });
 
     // 🚀 更换：由于 app.ts 里我们已经有一行规整的系统开业快照日志了，
