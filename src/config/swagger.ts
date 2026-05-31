@@ -24,7 +24,7 @@ export function generateSwaggerDocs() {
   return generator.generateDocument({
     openapi: "3.0.0",
     info: { version: "1.0.0", title: "🔐 统一认证服务 API 文档" },
-    servers: [{ url: "/api/auth" }],
+    servers: [{ url: "/api/v1" }],
   });
 }
 

@@ -115,7 +115,7 @@ export function registerAuthSwaggerDocs() {
   // 1. 注册接口
   registry.registerPath({
     method: "post",
-    path: "/register",
+    path: "/auth/register",
     summary: "新用户注册 API",
     description: "开放接口。创建新用户账号并强制绑定全站唯一的安全邮箱。",
     tags: ["用户认证模块"],
@@ -155,7 +155,7 @@ export function registerAuthSwaggerDocs() {
   // 2. 登录接口
   registry.registerPath({
     method: "post",
-    path: "/login",
+    path: "/auth/login",
     summary: "用户登录认证 API",
     description:
       "开放接口。凭账密登录，成功后颁发 HS256 加密的无状态 JWT 访问令牌。",
@@ -193,7 +193,7 @@ export function registerAuthSwaggerDocs() {
   // 3. 发送验证码接口
   registry.registerPath({
     method: "post",
-    path: "/send-code",
+    path: "/auth/send-code",
     summary: "请求发送重置密码验证码",
     description:
       "开放接口。忘记密码第一步：通过用户名反查安全邮箱发送验证码。此接口已做防用户枚举模糊处理。",
@@ -222,7 +222,7 @@ export function registerAuthSwaggerDocs() {
   // 4. 忘记密码重置接口
   registry.registerPath({
     method: "post",
-    path: "/forgot-password",
+    path: "/auth/forgot-password",
     summary: "凭邮箱验证码执行密码重置",
     description:
       "开放接口。忘记密码第二步：提供新密码以及 6 位验证码。验证码一经校验成功，立刻在内存中销毁，防二次重放攻击。",
@@ -254,7 +254,7 @@ export function registerAuthSwaggerDocs() {
   // 5. 验证 Token 接口
   registry.registerPath({
     method: "get",
-    path: "/validate-token",
+    path: "/auth/validate-token",
     summary: "验证 JWT 访问令牌有效性",
     description:
       "🔒 鉴权接口。主要供前端页面路由守卫或网关层调用，核验当前持有的 Bearer Token 是否合法且未过期。",
@@ -283,7 +283,7 @@ export function registerAuthSwaggerDocs() {
   // 6. 验证码核验接口
   registry.registerPath({
     method: "post",
-    path: "/verify-code",
+    path: "/auth/verify-code",
     summary: "实时核验验证码有效性",
     description:
       "开放接口。用于前端表单实时校验。校验验证码是否正确且在有效期内，确保下一步重置密码流程的安全性。",
